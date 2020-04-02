@@ -1,0 +1,12 @@
+{
+  "autoload": {
+        "psr-4": {
+           "app\\": "app/",
+           "public\\": "public/",
+           "lib\\": "lib/"
+        }
+     },
+  "require": {
+    "vkcom/vk-php-sdk": "^5.101"
+  }
+}
