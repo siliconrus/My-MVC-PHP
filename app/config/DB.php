@@ -6,9 +6,9 @@ use \PDO;
 class DB {
 
     private static $PDOInstance;
-    private static $db_name = 'akhmetov_dev';
-    private static $db_user = 'akhmetov_dev';
-    private static $db_pass = '9%Ecm6uv';
+    private static $db_name = '';
+    private static $db_user = '';
+    private static $db_pass = '';
     private static $stmt;
 
     static private $ConInstance;
