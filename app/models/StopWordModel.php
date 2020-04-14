@@ -5,7 +5,7 @@ use app\core\Models;
 
 class StopWordModel extends Models
 {
-    public static function rules()
+    public static function rules(): array
     {
         return
             [

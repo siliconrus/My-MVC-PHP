@@ -7,7 +7,7 @@ class AccountModel extends Models
 {
         /*Регистрация*/
     /* Получаем логин из БД */
-    public function resLogin($login)
+    public function resLogin(string $login)
     {
         $sql = 'SELECT login FROM users WHERE login = ?';
 
@@ -16,7 +16,7 @@ class AccountModel extends Models
     }
 
     /* Получаем емейл из БД */
-    public function checkEmail($email)
+    public function checkEmail(string $email)
     {
         $sql = 'SELECT email FROM users WHERE email = ?';
 
@@ -25,7 +25,7 @@ class AccountModel extends Models
     }
 
     /* Получаем авы из БД */
-    public function checkAvatars($id)
+    public function checkAvatars(int $id)
     {
         $sql = 'SELECT avatars FROM users WHERE id = ?';
 
@@ -33,7 +33,7 @@ class AccountModel extends Models
 
     }
         /* Тестирую */
-    public function checkSQL($id, $checkMysql)
+    public function checkSQL(int $id, $checkMysql)
     {
         $sql = 'SELECT login, email, avatars FROM users WHERE id = ?';
 
@@ -43,7 +43,7 @@ class AccountModel extends Models
     }
     
     /* Получаем пароль из БД */
-    private function checkPwd($id)
+    private function checkPwd(int $id)
     {
         $sql = 'SELECT password FROM users WHERE id = ?';
 
@@ -55,7 +55,7 @@ class AccountModel extends Models
 
     }
         /* Проверка на подтверждение пароля */
-    public function passwordConfirmation($password_confirmation, $password)
+    public function passwordConfirmation($password_confirmation, $password): bool
     {
         if($password_confirmation !== $password)
         {
@@ -73,10 +73,10 @@ class AccountModel extends Models
 
     public function getIP()
     {
-        return isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+        return $_SERVER['REMOTE_ADDR'] ?? null;
     }
 
-    public function activateAccount($token)
+    public function activateAccount($token): bool
     {
         $sql = 'UPDATE users SET status = ?, token = ? WHERE token = ?';
         $this->DB->query($sql, [1, '', $token]);
@@ -84,7 +84,7 @@ class AccountModel extends Models
         return true;
     }
 
-    public function checkToken($token, $id)
+    public function checkToken($token, $id): bool
     {
         $sql = "SELECT {$id} FROM users WHERE token = :token";
         $checkToken = $this->DB->query($sql, [':token' => $token])->fetchAssoc();
@@ -108,7 +108,7 @@ class AccountModel extends Models
         return $checkTokens;
     }
 
-    public function checkStatus($email)
+    public function checkStatus($email): bool
     {
         $sql = 'SELECT status FROM users WHERE email = :email';
         $checkStatus = $this->DB->query($sql, [':email' => $email])->fetchAssoc();
@@ -123,7 +123,7 @@ class AccountModel extends Models
             return true;
     }
 
-    public function register($login, $email, $password)
+    public function register($login, $email, $password): void
     {
         $token = $this->createToken();
         $pwd = password_hash($password, PASSWORD_DEFAULT);
@@ -147,7 +147,7 @@ class AccountModel extends Models
 
         /*БЛОК ЗАГРУЗКИ ФОТО*/
     /* Валидация фотографий */
-    private function validatePhoto()
+    private function validatePhoto(): string
     {
         $extensions = ['png', 'jpeg', 'jpg'];
 
@@ -187,7 +187,7 @@ class AccountModel extends Models
         if($this->validatePhoto())
         {
             $filePath = 'public/img/users/';
-            $imgName = uniqid() . '.' . basename($_FILES['image']['type']);
+            $imgName = uniqid('', true) . '.' . basename($_FILES['image']['type']);
             $uploadImg = $filePath . $imgName;
 
             if($avaID !== '' && $avaID != 'public/img/no-user.jpg')
@@ -199,7 +199,7 @@ class AccountModel extends Models
         }
     }
         /* Блок смены пароля */
-    public function newPass($current, $password)
+    public function newPass($current, $password): ?bool
     {
       $verify_curr = password_verify($current, $this->checkPwd($_SESSION['auth_session']['id']));
 
@@ -212,15 +212,13 @@ class AccountModel extends Models
            $this->pwd_hash = $pwd_hash;
 
            return true;
-       }
-       else
-       {
+       } else {
            $this->error = 'Что-то пошло не так..';
            return false;
        }
     }
 
-    public function updIP($ip, $last_activity, $id)
+    public function updIP($ip, $last_activity, $id): void
     {
         $sql = 'UPDATE users SET ip = ?, last_activity = ? WHERE id = ?';
 
@@ -252,7 +250,7 @@ class AccountModel extends Models
                 $_SESSION['auth_session'] = $data;
             }
          */
-                public function auth($email, $password)
+                public function auth($email, $password): bool
                 {
                     $sql = 'SELECT * FROM users WHERE email = :email';
                     $hash = $this->DB->query($sql, [':email' => $email])->fetchAssoc();
@@ -285,7 +283,7 @@ class AccountModel extends Models
     }
 
             /* Обновление профиля */
-    public function updateProfile($login, $email, $id)
+    public function updateProfile($login, $email, $id): bool
     {
         $sql = 'UPDATE users SET login = ?, email = ? WHERE id = ?';
         $this->DB->query($sql, [$login, $email, $id]);
@@ -294,7 +292,7 @@ class AccountModel extends Models
         return true;
     }
 
-    public function updateAvatars($id)
+    public function updateAvatars($id): bool
     {
         $sql = 'UPDATE users SET avatars = ? WHERE id = ?';
         $this->DB->query($sql, [$this->uploadImg, $id]);
@@ -305,7 +303,7 @@ class AccountModel extends Models
     }
 
         /* Обновление пароля в профиле */
-    public function updatesProfile($id)
+    public function updatesProfile($id): bool
     {
         $sql = 'UPDATE users SET password = ? WHERE id = ?';
         $this->DB->query($sql, [$this->pwd_hash, $id]);
@@ -315,7 +313,7 @@ class AccountModel extends Models
 
     /* Восстановление пароля */
 
-    public function cchEmail($email)
+    public function cchEmail($email): bool
     {
         $sql = 'SELECT email FROM users WHERE email = ?';
         $cchEmail = $this->DB->query($sql, [$email])->fetchAssoc();
@@ -330,7 +328,7 @@ class AccountModel extends Models
         return true;
     }
 
-    public function reset($email)
+    public function reset($email): void
     {
         $resetToken = $this->createToken();
 
@@ -344,7 +342,7 @@ class AccountModel extends Models
             '/account/resetPwd/' . $resetToken);
     }
 
-    public function resetPwd($post)
+    public function resetPwd($post): void
     {
 
         $sql = 'UPDATE users SET password = ?, token = ?, status = ? WHERE login = ?';
@@ -356,7 +354,7 @@ class AccountModel extends Models
         ]);
     }
 
-    public function tToken($login, $token)
+    public function tToken($login, $token): bool
     {
         //$this->checkToken($this->route['token'], 'login');
         $sql = 'SELECT token FROM users WHERE login = ?';
@@ -374,7 +372,7 @@ class AccountModel extends Models
     }
 
     /*Выход*/
-    public function logout()
+    public function logout(): void
     {
         unset($_SESSION['auth_session']);
     }

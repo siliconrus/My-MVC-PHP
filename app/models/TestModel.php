@@ -5,7 +5,7 @@ use app\core\Models;
 
 class TestModel extends Models
 {
-    public function testVk()
+    public function testVk(): void
     {
         $token = 'https://oauth.vk.com/authorize?client_id=7302082&display=page&redirect_uri=http://obj.siliconrus.ru/vk/vk.php&scope=friends&response_type=code&v=5.103';
 

@@ -5,7 +5,7 @@ use app\core\Models;
 
 class MainModel extends Models
 {
-    public function deleteMyPost($id)
+    public function deleteMyPost(int $id)
     {
         $sql = 'DELETE FROM comments WHERE id = ?';
 

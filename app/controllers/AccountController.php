@@ -7,7 +7,7 @@ use app\core\View;
 class AccountController extends Controllers
 {
     /*Регистрация*/
-    public function registerAction()
+    public function registerAction(): void
     {
         if (!empty($_POST))
         {
@@ -35,7 +35,7 @@ class AccountController extends Controllers
     }
         /* Активация аккаунта */
 
-    public function confirmAction()
+    public function confirmAction(): void
     {
         if(!$this->model->checkToken($this->route['token'], 'id'))
         {
@@ -45,7 +45,7 @@ class AccountController extends Controllers
         $this->model->activateAccount($this->route['token']);
         $this->view->renderView('Активация аккаунта');
     }
-    public function resetAction()
+    public function resetAction(): void
     {
         if(!empty($_POST))
         {
@@ -63,7 +63,7 @@ class AccountController extends Controllers
         $this->view->renderView('Восстановление пароля');
     }
 
-    public function resetPwdAction()
+    public function resetPwdAction(): void
     {
         if($this->route['token'] == $this->model->checkTokens($this->route['token'], 'token')) {
 
@@ -88,7 +88,7 @@ class AccountController extends Controllers
     }
 
         /*Авторизация*/
-    public function authAction()
+    public function authAction(): void
     {
             //Реализация авторизации
         if(!empty($_POST))
@@ -115,7 +115,7 @@ class AccountController extends Controllers
     }
 
         /* PROFILE */
-    public function profileAction()
+    public function profileAction(): void
     {
         if(!empty($_POST))
         {
@@ -157,7 +157,7 @@ class AccountController extends Controllers
         $this->view->renderView('Профиль');
     }
 
-    public function profilesAction()
+    public function profilesAction(): void
     {
         if (!empty($_POST))
         {
@@ -191,7 +191,7 @@ class AccountController extends Controllers
     }
 
     /*Выход*/
-    public function logoutAction()
+    public function logoutAction(): void
     {
         $this->model->logout();
         $this->view->redirect('index');

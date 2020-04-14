@@ -7,9 +7,9 @@ use app\models\StopWordModel;
 
 class IndexModel extends Models
 {
-    const MIN_LENGHT = 2;
+    private const MIN_LENGHT = 2;
 
-    const MAX_LENGHT = 150;
+    private const MAX_LENGHT = 150;
 
     public $comments = 'comments';
 
@@ -23,7 +23,7 @@ class IndexModel extends Models
 
     }
 
-    public function validateMessages($string)
+    public function validateMessages(string $string): bool
     {
         $slice = explode(' ', $string);
         foreach ($slice as $key) {

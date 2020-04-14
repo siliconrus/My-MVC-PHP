@@ -46,7 +46,7 @@ class AdminModel extends Models
         return $this->DB->query($sql)->fetchAssocAll();
     }
 
-    public function adminValidate($post)
+    public function adminValidate($post): bool
     {
         if(trim($post['userID']) == '')
         {
@@ -94,14 +94,14 @@ class AdminModel extends Models
         ]);
     }
 
-    public function siteBan($user_id, $type)
+    public function siteBan(int $user_id, $type): void
     {
         $sql = 'INSERT INTO ban_list SET user_id = ?, cause = ?, type = ?';
 
         $this->DB->query($sql, [$user_id, 'Вас забанил анти-чит', $type]);
     }
 
-    public function checkTakeBan($id, $type)
+    public function checkTakeBan($id, $type): bool
     {
         $sql = 'SELECT * FROM ban_list WHERE user_id = ? AND type = ?';
 
@@ -134,8 +134,8 @@ class AdminModel extends Models
 
         $offset = ($this->perPage * $this->page) - $this->perPage;
 
-        $allUsers = $this->DB->query("SELECT * FROM users ORDER BY id ASC"
-                                )->fetchAssocAll();
+        $allUsers = $this->DB->query("SELECT * FROM users ORDER BY id ASC")->fetchAssocAll();
+
         $pageExists = true;
 
         if($allUsers <=0 )
